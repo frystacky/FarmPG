@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GridController : MonoBehaviour
 {
+    public static GridController instance;
+
     [Header("Referance to other componets")]
     public Transform minPoint;  //min point of our grid
     public Transform maxPoint;  //max point of our grid
@@ -15,6 +17,11 @@ public class GridController : MonoBehaviour
     public LayerMask gridBlocker;
 
     private Vector2Int gridSize; //used to figure out the size of the grid
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -50,6 +57,7 @@ public class GridController : MonoBehaviour
                 GrowBlock newblock = Instantiate(baseGridBlock, startPoint + new Vector3(x, y, 0f), Quaternion.identity);
 
                 newblock.transform.SetParent(transform);
+                newblock.sr.sprite = null;
 
                 blockRows[y].blocks.Add(newblock);
 
@@ -63,6 +71,30 @@ public class GridController : MonoBehaviour
 
         baseGridBlock.gameObject.SetActive(false);
     }
+
+    //x and y of the world that we want to get info about
+    public GrowBlock GetBlock(float x, float y)
+    {
+        //round to int since grind values are on whole numbers
+        x = Mathf.RoundToInt(x); 
+        y = Mathf.RoundToInt(y);
+
+        //relative to the start point of the grid
+        x -= minPoint.position.x;
+        y -= minPoint.position.y;
+
+        //convert to int so we can check in our list
+        int intX = Mathf.RoundToInt(x);
+        int intY = Mathf.RoundToInt(y);
+
+        if(intX < gridSize.x && intY < gridSize.y)
+        {
+            return blockRows[intY].blocks[intX];
+        }
+
+        return null;
+    }
+
 }
 
 [System.Serializable]

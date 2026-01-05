@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     public InputActionReference moveInput;  //"Player/Move" from InputAction
     public InputActionReference actionInput; //"Player/Attack" from InputAction
     public Animator anim;   //the animator componet on the sprite child object
+    public Transform toolIndicator; //the tool indicator child object on the player
 
     [Header("Player movement config")]
     public float moveSpeed;
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [Header("Player tool config")]
     public float toolWaitTime = .5f;
     private float toolWaitCounter;
+    public float toolRange = 3f;
 
     //keeps track of what tools the player can use
     public enum ToolType
@@ -108,13 +110,28 @@ public class PlayerController : MonoBehaviour
 
 
         anim.SetFloat("speed", rb2d.linearVelocity.magnitude);
+
+        //logic for tool indicator to keep it at tool range and snap to grid
+        toolIndicator.position = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        toolIndicator.position = new Vector3(toolIndicator.position.x, toolIndicator.position.y, 0f);
+
+        if(Vector3.Distance(toolIndicator.position, transform.position) > toolRange)
+        {
+            Vector2 direction = toolIndicator.position - transform.position;
+            direction = direction.normalized * toolRange;
+            toolIndicator.position = transform.position + new Vector3(direction.x, direction.y, 0f);
+        }
+
+        //dont forget to add grid offset
+        toolIndicator.position = new Vector3(Mathf.FloorToInt(toolIndicator.position.x) + .5f,
+            Mathf.FloorToInt(toolIndicator.position.y) + .5f, 0f); //end of tool indicator logic
     }
 
     void UseTool()
     {
         GrowBlock block = null;
 
-        block = FindFirstObjectByType<GrowBlock>();
+        block = GridController.instance.GetBlock(toolIndicator.position.x -.5f, toolIndicator.position.y -.5f);
 
         //block.PloughSoil();
 
