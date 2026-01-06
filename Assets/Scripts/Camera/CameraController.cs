@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        target = FindAnyObjectByType<PlayerController>().transform;
+        target = PlayerController.instance.transform;
 
         //unparent the objects else they follow the camera
         clampMin.SetParent(null);

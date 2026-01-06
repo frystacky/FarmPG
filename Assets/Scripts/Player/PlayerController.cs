@@ -5,6 +5,8 @@ using static GrowBlock;
 
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController instance;
+
     [Header("Referance to other componets")]
     public Rigidbody2D rb2d;    //rb2d attached to this gameObject
     public InputActionReference moveInput;  //"Player/Move" from InputAction
@@ -30,6 +32,19 @@ public class PlayerController : MonoBehaviour
     }
 
     public ToolType currentTool;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
