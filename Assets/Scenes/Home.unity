@@ -23172,6 +23172,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3308461368682169801, guid: b11f596516a5c824fa2f8e24c4ac8f84, type: 3}
+      propertyPath: transitionName
+      value: Main-Indoors
+      objectReference: {fileID: 0}
     - target: {fileID: 8005816854688174760, guid: b11f596516a5c824fa2f8e24c4ac8f84, type: 3}
       propertyPath: m_Name
       value: AreaSwitcher
