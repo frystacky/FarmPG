@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GridController : MonoBehaviour
 {
@@ -59,6 +60,8 @@ public class GridController : MonoBehaviour
                 newblock.transform.SetParent(transform);
                 newblock.sr.sprite = null;
 
+                newblock.SetGridPosition(x, y);
+
                 blockRows[y].blocks.Add(newblock);
 
                 if(Physics2D.OverlapBox(newblock.transform.position, new Vector2(.9f, .9f), 0f, gridBlocker))
@@ -66,7 +69,23 @@ public class GridController : MonoBehaviour
                     newblock.sr.sprite = null;
                     newblock.preventUse = true;
                 }
+
+                if(GridInfo.instance.hasGrid == true)
+                {
+                    BlockInfo storeBlock = GridInfo.instance.theGrid[y].blocks[x];
+
+                    newblock.currentStage = storeBlock.currentStage;
+                    newblock.isWatered = storeBlock.isWatered;
+
+                    newblock.SetSoilSprite();
+                    newblock.UpdateCropSprite();
+                }
             }
+        }
+
+        if(GridInfo.instance.hasGrid == false)
+        {
+            GridInfo.instance.CreateGrid();
         }
 
         baseGridBlock.gameObject.SetActive(false);
